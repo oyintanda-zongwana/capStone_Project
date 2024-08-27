@@ -1,5 +1,5 @@
 import { compare } from 'bcrypt';
-import { getUserDB } from '../model/usersDB.js';
+import { getUserDB } from '../model/userDB.js';
 import jwt from 'jsonwebtoken';
 import { config } from 'dotenv';
 config();
@@ -41,6 +41,22 @@ const checkUser = async (req, res, next) => {
         console.error("Error in checkUser:", error);
         res.status(500).send("Internal server error: " + error.message);
     }
+};
+
+const verifyAToken = (req, res, next) => {
+    let {cookie} = req.headers;
+    // checks if the token exists first
+    let token = cookie && cookie.split("=")[1];
+    jwk.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+        if (err) {
+            res.json({message: 'token has expired'});
+            return;
+        }
+        req.body.user = decoded.username
+        console.log(req.body.username);
+    })
+    console.log(token);
+    next();
 };
 
 export {checkUser}
