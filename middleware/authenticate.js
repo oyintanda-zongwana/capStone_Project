@@ -7,7 +7,7 @@ config();
 config();
 
 const checkUser = async (req, res, next) => {
-    const { email, userPass } = req.body;
+    const { email, password } = req.body;
     
     try {
         let user = await getUserDB(email);
@@ -18,16 +18,16 @@ const checkUser = async (req, res, next) => {
 
         console.log("User found:", user); // Debug log
 
-        let hashedPassword = user.userPass;
+        let hashedPassword = user.password;
         
-        console.log("Provided password:", userPass); // Debug log
+        console.log("Provided password:", password); // Debug log
         console.log("Hashed password from DB:", hashedPassword); // Debug log
 
-        if (!userPass || !hashedPassword) {
+        if (!password || !hashedPassword) {
             throw new Error("Missing password or hashed password");
         }
 
-        let result = await compare(userPass, hashedPassword);
+        let result = await compare(password, hashedPassword);
 
         if (result) {
             let token = jwt.sign({ email: email }, process.env.SECRET_KEY, { expiresIn: '1h' });
