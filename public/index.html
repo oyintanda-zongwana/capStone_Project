@@ -3,76 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Path info</title>
+    <title>API Path Information</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <table border="1" style="margin: auto;">
-        <tr>
-            <th>HTTP Methods</th>
-            <th>Path</th>
-            <th>Description</th>
-        </tr>
-        <tr>
-           <th>User</th>
-        </tr>
-        <tr>
-            <td>GET</td>
-            <td>/users</td>
-            <td>Gets all the users</td>
-        </tr>
-        <tr>
-            <td>GET</td>
-            <td>/users/:id</td>
-            <td>Gets a single user</td>
-        </tr>
-        <tr>
-            <td>POST</td>
-            <td>/users/register</td>
-            <td>Add a new user</td>
-        </tr>
-        <tr>
-            <td>POST</td>
-            <td>/users/login</td>
-            <td>An existing user gets a token after logging in</td>
-        </tr>
-        <tr>
-            <td>PATCH</td>
-            <td>/users/update/:id</td>
-            <td>Updates an existing user</td>
-        </tr>
-        <tr>
-            <td>DELETE</td>
-            <td>/users/delete/:id</td>
-            <td>Delete an existing user</td>
-        </tr>
-        <tr>
-            <th>Products</th>
-         </tr>
-         <tr>
-             <td>GET</td>
-             <td>/Products</td>
-             <td>Gets all the products</td>
-         </tr>
-         <tr>
-             <td>GET</td>
-             <td>/Products/:id</td>
-             <td>Gets a single products</td>
-         </tr>
-         <tr>
-             <td>POST</td>
-             <td>/Products/addProduct</td>
-             <td>Add a new products</td>
-         </tr>
-         <tr>
-             <td>PATCH</td>
-             <td>/Products/update/:id</td>
-             <td>Updates an existing products</td>
-         </tr>
-         <tr>
-             <td>DELETE</td>
-             <td>/Products/delete/:id</td>
-             <td>deletes existing products</td>
-         </tr>
-    </table>
+    <div class="container">
+        <h1>API Path Information</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>HTTP Methods</th>
+                    <th>Path</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="section-header">
+                    <th colspan="3">User</th>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/users</td>
+                    <td>Gets all the users</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/users/:id</td>
+                    <td>Gets a single user</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/users/register</td>
+                    <td>Add a new user</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/users/login</td>
+                    <td>An existing user gets a token after logging in</td>
+                </tr>
+                <tr>
+                    <td>PATCH</td>
+                    <td>/users/update/:id</td>
+                    <td>Updates an existing user</td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/users/delete/:id</td>
+                    <td>Delete an existing user</td>
+                </tr>
+                <tr class="section-header">
+                    <th colspan="3">Products</th>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/products</td>
+                    <td>Gets all the products</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/products/:id</td>
+                    <td>Gets a single product</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/products/addProduct</td>
+                    <td>Add a new product</td>
+                </tr>
+                <tr>
+                    <td>PATCH</td>
+                    <td>/products/update/:id</td>
+                    <td>Updates an existing product</td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/products/delete/:id</td>
+                    <td>Deletes existing product</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
