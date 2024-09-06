@@ -7,7 +7,7 @@
         <p>Price: ${{ product.amount }}</p>
         <p>Category: {{ product.catergory }}</p>
         <p>Quantity: {{ product.quantity }}</p>
-        <button @click="viewProduct(product.prodID)">View</button>
+        <button @click="viewProduct()">View</button>
       </div>
     </div>
     <div v-else>Loading products...</div>
@@ -23,8 +23,8 @@ export default {
     ...mapState(['products'])
   },
   methods: {
-    viewProduct(productId) {
-      this.$router.push(`/product/${productId}`)
+    viewProduct() {
+      this.$router.push(`/productS`)
     }
   },
   created() {

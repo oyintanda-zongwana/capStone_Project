@@ -7,8 +7,7 @@
     <div v-if="isLoading" class="spinner">
       <div class="bounce1"></div>
       <div class="bounce2"></div>
-      <div class="bounce3"></div>
-      <p>Loading products...</p>
+      <div class="bounce3"></div>   
     </div>
     <div v-else-if="products && products.length > 0" class="products-grid">
       <div v-for="product in products" :key="product.prodID" class="product-card">
