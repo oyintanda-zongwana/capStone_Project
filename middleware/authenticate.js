@@ -59,4 +59,4 @@ const verifyAToken = (req, res, next) => {
     next();
 };
 
-export {checkUser}
+export {checkUser, verifyAToken}

@@ -1,4 +1,4 @@
-import {getProductsDB, getProductDB, insertProductDB, deleteProductDB, updateProductDB} from '../model/productDB.js'
+import {getProductsDB, getProductDB, insertProductDB, deleteProductDB, updateProductDB, addToCartDB} from '../model/productDB.js'
 import {hash} from 'bcrypt'
 
 let getProducts = async(req, res) => {
@@ -37,4 +37,11 @@ let updateProduct = async(req, res) => {
     res.send('data has been updated successfully')
 }
 
-export {getProducts, getProduct, insertProduct, deleteProduct, updateProduct}
+let addToCart = async (req, res) => {
+    console.log(req.body);
+    let {id} = await getUserDB(req.body.user)
+    // await addToCartDB(req.body.id, id)
+    res.json({message: 'You have added an item to your cart'})
+}
+
+export {getProducts, getProduct, insertProduct, deleteProduct, updateProduct, addToCart}

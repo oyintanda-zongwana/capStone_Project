@@ -32,4 +32,11 @@ const updateProductDB = async (id, name, quantity, amount, Category, prodUrl) =>
     `, [name, quantity, amount, Category, prodUrl, id]);
 };
 
-export { getProductsDB, getProductDB, insertProductDB, deleteProductDB, updateProductDB };
+const addToCartDB = async (userID, prodID) => {
+    await pool.query(`
+        INSERT INTO cart (userID, prodID)
+        VALUES (?, ?)
+        `, [userID, prodID])
+}
+
+export { getProductsDB, getProductDB, insertProductDB, deleteProductDB, updateProductDB, addToCartDB};
