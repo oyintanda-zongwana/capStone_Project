@@ -7,7 +7,7 @@ const productRouter = express.Router()
 productRouter.get('/', getProducts)
 productRouter.get('/:id', getProduct)
 
-productRouter.post('/insert', insertProduct)
+productRouter.post('/addProduct', insertProduct)
 productRouter.post('/cart', verifyAToken, addToCart)
 
 productRouter.patch('/update/:id', updateProduct)
