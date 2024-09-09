@@ -17,7 +17,8 @@
           <p><strong>Price:</strong> $ {{ product.amount }}</p>
           <p><strong>Category:</strong> {{ product.catergory }}</p>
           <p><strong>Quantity:</strong> {{ product.quantity }}</p>
-          <button @click="viewProduct(product.prodID)">View Details</button>
+          <button @click="viewProduct(product.prodID)">View Details</button><br><br>
+          <button v-if="$cookies.get('token')" @click="addToCart(product.prodID)">Purchase : {{ product.prodName }}</button>
         </div>
       </div>
     </div>
@@ -44,6 +45,9 @@ export default {
   methods: {
     viewProduct(productId) {
       this.$router.push(`/product/${productId}`);
+    },
+    addToCart (prodID){
+      this.$store.dispatch('addToCart', prodID)
     }
   },
   async created() {

@@ -5,6 +5,7 @@
       <table v-if="products">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Name</th>
             <th>Price</th>
             <th>Category</th>
@@ -14,6 +15,7 @@
         </thead>
         <tbody>
           <tr v-for="product in products" :key="product.id">
+            <td><img v-if="product.prodUrl" :src="product.prodUrl" :alt="product.prodName" class="product-image"></td>
             <td>{{ product.prodName }}</td>
             <td>${{ product.amount }}</td>
             <td>{{ product.catergory }}</td>
@@ -31,14 +33,18 @@
       <table v-if="users">
         <thead>
           <tr>
+            <th>Profile</th>
             <th>Name</th>
+            <th>Surname</th>
             <th>Email</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="user in users" :key="user.id">
-            <td>{{ user.name }}</td>
+            <td><img v-if="user.userProfile" :src="user.userProfile" :alt="user.firstName" class="product-image"></td>
+            <td>{{ user.firstName }}</td>
+            <td>{{ user.lastName }}</td>
             <td>{{ user.email }}</td>
             <td>
               <button @click="editUser(user)">Edit</button>
@@ -61,7 +67,7 @@
     },
     created() {
       this.$store.dispatch('getProducts')
-      // this.$store.dispatch('getUsers')
+      this.$store.dispatch('getUsers')
     },
     methods: {
       editProduct(product) {
