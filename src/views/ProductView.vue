@@ -8,7 +8,7 @@
         <p><strong>Description:</strong> {{ product.prodDescription }}</p>
       </div>
       <img v-if="product.prodUrl" :src="product.prodUrl" :alt="product.prodName" class="product-image">
-      <button @click="goBack">Back to Products</button>
+      <button @click="goBack">Back to Products</button> <button v-if="$cookies.get('token')" @click="addToCart(product.prodID)">Purchase : {{ product.prodName }}</button>
     </div>
     <div v-else>Loading product...</div>
   </template>
@@ -19,15 +19,15 @@
   export default {
     name: 'ProductView',
     computed: {
-      ...mapState(['products']),
-      product() {
-        const productId = this.$route.params.id
-        return this.products ? this.products.find(p => p.prodID === productId) : null
-      }
-    },
+  ...mapState(['products']),
+  product() {
+    const productId = this.$route.params.id;
+    return this.products ? this.products.find(p => p.prodID == productId) : null; // Ensure prodID comparison is not strict, as params are strings
+  }
+},
     methods: {
       goBack() {
-        this.$router.push('/')
+        this.$router.push('/products')
       }
     },
     created() {

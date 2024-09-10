@@ -19,7 +19,7 @@
           <label for="password">Password: </label>
           <input :type="eye ? 'text' : 'password'" id="password" v-model="form.password" required>
           <button type="button" class="toggle-password" @click="eye = !eye">
-            {{ eye ? 'Hide' : 'Show' }}
+            <i :class="eye ? 'las la-eye-slash' : 'las la-eye'"></i>
           </button>
         </div>
 

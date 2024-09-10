@@ -43,13 +43,13 @@ export default {
     ...mapState(['products']),  // This should correctly map products state
   },
   methods: {
-    viewProduct(productId) {
-      this.$router.push(`/product/${productId}`);
-    },
-    addToCart (prodID){
-      this.$store.dispatch('addToCart', prodID)
-    }
+  viewProduct(prodID) {
+    this.$router.push({ name: 'ProductView', params: { id: prodID } });  // Navigating to ProductView route with product ID
   },
+  addToCart(prodID) {
+    this.$store.dispatch('addToCart', prodID);
+  }
+},
   async created() {
     console.log("ProductsPage created hook called");
     try {
