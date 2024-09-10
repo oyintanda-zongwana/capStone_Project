@@ -38,10 +38,6 @@ export default {
 }
 
 /* Navigation bar styling */
-nav {
-  padding: 30px;
-  background-color: var(--secondary-color);
-}
 
 nav a {
   font-weight: bold;
@@ -51,7 +47,7 @@ nav a {
 }
 
 nav a.router-link-exact-active {
-  color: var(--accent-color);
+  color: var(--secondary-color);
   background-color: var(--primary-color);
   padding: 5px 10px;
   border-radius: 5px;
