@@ -4,24 +4,37 @@
     <div class="search-bar">
       <input v-model="searchQuery" type="text" placeholder="Search products...">
     </div>
+    
+    <!-- Sort by Dropdown -->
+    <div class="sort-bar">
+      <label for="sortBy">Sort by:</label>
+      <select v-model="sortBy" id="sortBy">
+        <option value="price">Price</option>
+        <option value="category">Category</option>
+        <option value="quantity">Quantity</option>
+      </select>
+    </div>
+
     <div v-if="isLoading" class="spinner">
       <div class="bounce1"></div>
       <div class="bounce2"></div>
       <div class="bounce3"></div>   
     </div>
-    <div v-else-if="products && products.length > 0" class="products-grid">
-      <div v-for="product in products" :key="product.prodID" class="product-card">
+    
+    <div v-else-if="filteredAndSortedProducts.length > 0" class="products-grid">
+      <div v-for="product in filteredAndSortedProducts" :key="product.prodID" class="product-card">
         <img v-if="product.prodUrl" :src="product.prodUrl" :alt="product.prodName" class="product-image">
         <div class="product-info">
           <h3>{{ product.prodName }}</h3>
           <p><strong>Price:</strong> $ {{ product.amount }}</p>
-          <p><strong>Category:</strong> {{ product.catergory }}</p>
+          <p><strong>Category:</strong> {{ product.category }}</p>
           <p><strong>Quantity:</strong> {{ product.quantity }}</p>
           <button @click="viewProduct(product.prodID)">View Details</button><br><br>
           <button v-if="$cookies.get('token')" @click="addToCart(product.prodID)">Purchase : {{ product.prodName }}</button>
         </div>
       </div>
     </div>
+    
     <div v-else>
       <p>No products found.</p>
     </div>
@@ -36,37 +49,53 @@ export default {
   data() {
     return {
       searchQuery: '',
-      isLoading: true
-    }
+      sortBy: 'price', // Default sort by price
+      isLoading: true,
+    };
   },
   computed: {
-    ...mapState(['products']),  // This should correctly map products state
+    ...mapState(['products']), // Maps the products state from Vuex
+    
+    // Filter and sort products
+    filteredAndSortedProducts() {
+      // Filter products by search query
+      let filteredProducts = this.products.filter((product) => {
+        return product.prodName.toLowerCase().includes(this.searchQuery.toLowerCase());
+      });
+
+      // Sort products based on the selected sort option
+      return filteredProducts.sort((a, b) => {
+        if (this.sortBy === 'price') {
+          return a.amount - b.amount;
+        } else if (this.sortBy === 'category') {
+          return a.category.localeCompare(b.category);
+        } else if (this.sortBy === 'quantity') {
+          return a.quantity - b.quantity;
+        }
+      });
+    },
   },
   methods: {
-  viewProduct(prodID) {
-    this.$router.push({ name: 'ProductView', params: { id: prodID } });  // Navigating to ProductView route with product ID
+    viewProduct(prodID) {
+      this.$router.push({ name: 'ProductView', params: { id: prodID } });
+    },
+    addToCart(prodID) {
+      this.$store.dispatch('addToCart', prodID);
+    },
   },
-  addToCart(prodID) {
-    this.$store.dispatch('addToCart', prodID);
-  }
-},
   async created() {
-    console.log("ProductsPage created hook called");
     try {
       if (!this.products || this.products.length === 0) {
-        console.log("Dispatching getProducts action");
         await this.$store.dispatch('getProducts');
       }
-      console.log('Products after dispatch:', this.products); // Ensure data is received
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
       this.isLoading = false;
     }
   }
-}
+};
 </script>
-
 
 <style scoped>
 .products-page {
@@ -75,12 +104,19 @@ export default {
   padding: 20px;
 }
 
-.search-bar {
+.search-bar, .sort-bar {
   margin-bottom: 20px;
 }
 
 .search-bar input {
   width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.sort-bar select {
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ddd;

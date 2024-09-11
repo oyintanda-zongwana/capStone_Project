@@ -25,7 +25,7 @@
 
         <div class="form-group" v-if="!isLogin">
           <label for="confirmPassword">Confirm Password</label>
-          <input :type="eye ? 'text' : 'password'" id="confirmPassword" v-model="form.confirmPassword">
+          <input :type="eye ? 'text' : 'password'" id="confirmPassword" v-model="form.confirmPassword" required>
         </div>
         <button type="submit" class="btn">{{ isLogin ? 'Login' : 'Sign Up' }}</button>
       </form>
@@ -62,26 +62,45 @@ export default {
         confirmPassword: ''
       };
     },
-    handleSubmit() {
+    async handleSubmit() {
       if (!this.isLogin && this.form.password !== this.form.confirmPassword) {
         alert('Passwords do not match!');
         return;
       }
 
       if (this.isLogin) {
-        this.loginUser();
+        await this.loginUser();
       } else {
-        this.addUser();
+        await this.addUser();
       }
     },
-    addUser() {
-      this.$store.dispatch('addUser', this.form);
-      alert('Sign Up successful!');
+    async addUser() {
+      try {
+        await this.$store.dispatch('addUser', {
+          name: this.form.name,
+          surname: this.form.surname,
+          email: this.form.email,
+          password: this.form.password
+        });
+        alert('Sign Up successful!');
+        this.isLogin = true; // Switch to login after successful signup
+      } catch (error) {
+        console.error('Error during sign up:', error);
+        alert('Sign Up failed!');
+      }
     },
-    loginUser() {
-      this.$store.dispatch('loginUser', this.form);
-      alert('Login successful!');
-      location.reload();
+    async loginUser() {
+      try {
+        await this.$store.dispatch('loginUser', {
+          email: this.form.email,
+          password: this.form.password
+        });
+        alert('Login successful!');
+        location.reload();
+      } catch (error) {
+        console.error('Error during login:', error);
+        alert('Login failed!');
+      }
     }
   }
 };

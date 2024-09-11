@@ -17,12 +17,12 @@
       </thead>
       <tbody>
         <tr v-for="product in products" :key="product.id">
-          <td><img v-if="product.prodUrl" :src="product.prodUrl" :alt="product.prodName" class="product-image"></td>
-          <td>{{ product.prodName }}</td>
-          <td>${{ product.amount }}</td>
-          <td>{{ product.catergory }}</td>
-          <td>{{ product.quantity }}</td>
-          <td>
+          <td data-label="Image"><img v-if="product.prodUrl" :src="product.prodUrl" :alt="product.prodName" class="product-image"></td>
+          <td data-label="Name">{{ product.prodName }}</td>
+          <td data-label="Price">${{ product.amount }}</td>
+          <td data-label="Category">{{ product.catergory }}</td>
+          <td data-label="Quantity">{{ product.quantity }}</td>
+          <td data-label="Actions">
             <button @click="openEditProductModal(product)">Edit</button>
             <button @click="deleteProduct(product.id)">Delete</button>
           </td>
@@ -46,11 +46,11 @@
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user.id">
-          <td><img v-if="user.userProfile" :src="user.userProfile" :alt="user.firstName" class="product-image"></td>
-          <td>{{ user.firstName }}</td>
-          <td>{{ user.lastName }}</td>
-          <td>{{ user.email }}</td>
-          <td>
+          <td data-label="Profile"><img v-if="user.userProfile" :src="user.userProfile" :alt="user.firstName" class="product-image"></td>
+          <td data-label="Name">{{ user.firstName }}</td>
+          <td data-label="Surname">{{ user.lastName }}</td>
+          <td data-label="Email">{{ user.email }}</td>
+          <td data-label="Actions">
             <button @click="openEditUserModal(user)">Edit</button>
             <button @click="deleteUser(user.id)">Delete</button>
           </td>
@@ -78,7 +78,18 @@
                 <label for="amount" class="form-label">Price</label>
                 <input type="number" class="form-control" id="amount" v-model="currentProduct.amount" required>
               </div>
-              <!-- Add other fields for category, quantity, etc. -->
+              <div class="mb-3">
+                <label for="catergory" class="form-label">Category</label>
+                <input type="text" class="form-control" id="catergory" v-model="currentProduct.catergory" required>
+              </div>
+              <div class="mb-3">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="quantity" v-model="currentProduct.quantity" required>
+              </div>
+              <div class="mb-3">
+                <label for="prodUrl" class="form-label">Image URL</label>
+                <input type="text" class="form-control" id="prodUrl" v-model="currentProduct.prodUrl">
+              </div>
               <button type="submit" class="btn btn-primary">{{ isEdit ? 'Save Changes' : 'Add Product' }}</button>
             </form>
           </div>
@@ -106,7 +117,11 @@
               </div>
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" v-model="currentUser.firstName" required>
+                <input type="email" class="form-control" id="email" v-model="currentUser.email" required>
+              </div>
+              <div class="mb-3">
+                <label for="userProfile" class="form-label">Profile Image URL</label>
+                <input type="text" class="form-control" id="userProfile" v-model="currentUser.userProfile">
               </div>
               <button type="submit" class="btn btn-primary">{{ isEdit ? 'Save Changes' : 'Add User' }}</button>
             </form>
@@ -118,7 +133,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'AdminPage',
@@ -128,12 +143,15 @@ export default {
       currentProduct: {
         prodName: '',
         amount: 0,
-        // Add other fields like category, quantity, etc.
+        catergory: '',
+        quantity: 0,
+        prodUrl: ''
       },
       currentUser: {
         firstName: '',
         lastName: '',
-        // Add other user-related fields
+        email: '',
+        userProfile: ''
       }
     };
   },
@@ -141,13 +159,15 @@ export default {
     ...mapState(['products', 'users']),
   },
   created() {
-    this.$store.dispatch('getProducts');
-    this.$store.dispatch('getUsers');
+    this.getProducts();
+    this.getUsers();
   },
   methods: {
+    ...mapActions(['getProducts', 'getUsers', 'addProduct', 'editProduct', 'deleteProduct', 'addUser', 'editUser', 'deleteUser']),
+    
     openAddProductModal() {
       this.isEdit = false;
-      this.currentProduct = { prodName: '', amount: 0 };
+      this.currentProduct = { prodName: '', amount: 0, catergory: '', quantity: 0, prodUrl: '' };
       new bootstrap.Modal(document.getElementById('productModal')).show();
     },
     openEditProductModal(product) {
@@ -155,23 +175,23 @@ export default {
       this.currentProduct = { ...product };
       new bootstrap.Modal(document.getElementById('productModal')).show();
     },
-    submitProduct() {
+    async submitProduct() {
       if (this.isEdit) {
-        // Call editProduct action in Vuex
-        this.$store.dispatch('editProduct', this.currentProduct);
+        await this.editProduct(this.currentProduct);
       } else {
-        // Call addProduct action in Vuex
-        this.$store.dispatch('addProduct', this.currentProduct);
+        await this.addProduct(this.currentProduct);
       }
       new bootstrap.Modal(document.getElementById('productModal')).hide();
     },
-    deleteProduct(prodID) {
-      this.$store.dispatch('deleteProduct', prodID);
+    async deleteProduct(prodID) {
+      if (confirm('Are you sure you want to delete this product?')) {
+        await this.deleteProduct(prodID);
+      }
     },
 
     openAddUserModal() {
       this.isEdit = false;
-      this.currentUser = { firstName: '', lastName: '' };
+      this.currentUser = { firstName: '', lastName: '', email: '', userProfile: '' };
       new bootstrap.Modal(document.getElementById('userModal')).show();
     },
     openEditUserModal(user) {
@@ -179,18 +199,18 @@ export default {
       this.currentUser = { ...user };
       new bootstrap.Modal(document.getElementById('userModal')).show();
     },
-    submitUser() {
+    async submitUser() {
       if (this.isEdit) {
-        // Call editUser action in Vuex
-        this.$store.dispatch('editUser', this.currentUser);
+        await this.editUser(this.currentUser);
       } else {
-        // Call addUser action in Vuex
-        this.$store.dispatch('addUser', this.currentUser);
+        await this.addUser(this.currentUser);
       }
       new bootstrap.Modal(document.getElementById('userModal')).hide();
     },
-    deleteUser(userId) {
-      this.$store.dispatch('deleteUser', userId);
+    async deleteUser(userId) {
+      if (confirm('Are you sure you want to delete this user?')) {
+        await this.deleteUser(userId);
+      }
     }
   }
 };
