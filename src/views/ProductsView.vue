@@ -27,7 +27,7 @@
         <div class="product-info">
           <h3>{{ product.prodName }}</h3>
           <p><strong>Price:</strong> $ {{ product.amount }}</p>
-          <p><strong>Category:</strong> {{ product.category }}</p>
+          <p><strong>Category:</strong> {{ product.catergory }}</p>
           <p><strong>Quantity:</strong> {{ product.quantity }}</p>
           <button @click="viewProduct(product.prodID)">View Details</button><br><br>
           <button v-if="$cookies.get('token')" @click="addToCart(product.prodID)">Purchase : {{ product.prodName }}</button>
