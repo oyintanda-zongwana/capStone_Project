@@ -10,8 +10,7 @@
         <button @click="viewProduct()">View</button>
       </div>
     </div>
-    <div v-else>Loading products...</div><br><br>
-    <div>
+    <div v-else>Loading products...
 <div class="loader">
   <svg
     xml:space="preserve"

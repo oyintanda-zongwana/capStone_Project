@@ -1,7 +1,7 @@
 <template>
   <nav>
     <NavBar />
-  </nav>
+  </nav><br><br><br><br>
   <router-view/>
 </template>
 

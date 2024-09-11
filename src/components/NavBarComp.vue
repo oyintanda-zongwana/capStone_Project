@@ -1,26 +1,26 @@
 <template>
-  <nav class="navbar">
-    <div class="container">
-      <!-- Navigation links on the left -->
-      <div class="navbar-collapse" :class="{ 'open': isMenuOpen }">
-        <ul class="navbar-nav ml-auto">
+  <nav class="navbar fixed-top">
+    <div class="container d-flex justify-content-between">
+      <!-- Logo on the left -->
+      <router-link to="/" class="navbar-brand">
+        <img src="https://oyintanda-zongwana.github.io/hosted-pics/pics%20folder/brand.png" alt="Logo" class="logo">
+      </router-link>
+
+      <!-- Toggler button on the right -->
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navigation links (collapse) -->
+      <div class="collapse navbar-collapse" id="navbarToggler">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item" v-for="(item, index) in navItems" :key="index">
-            <router-link class="nav-link" :to="item.link" @click="closeMenu">{{ item.label }}</router-link>
+            <router-link class="nav-link" :to="item.link">{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
-
-      <!-- Logo on the right -->
-      <div class="navbar-brand">
-        <router-link to="/">
-          <img src="https://oyintanda-zongwana.github.io/hosted-pics/pics%20folder/brand.png" class="logo" alt="Logo" width="50" height="50">
-        </router-link>
-      </div>
-
-      <!-- Hamburger toggle button for mobile -->
-      <button class="navbar-toggler" type="button" @click="toggleMenu">
-        <span class="navbar-toggler-icon"></span>
-      </button>
     </div>
   </nav>
 </template>
@@ -36,46 +36,25 @@ export default {
         { label: 'Admin', link: '/admin' },
         { label: 'Login/Sign Up', link: '/login' },
         { label: 'Cart', link: '/cart' }
-      ],
-      isMenuOpen: false // Track whether the menu is open or closed
+      ]
     };
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen; // Toggle the menu visibility
-    },
-    closeMenu() {
-      this.isMenuOpen = false; // Close the menu after selecting an item
-    }
   }
 };
 </script>
 
 <style scoped>
-/* Navbar styling */
+/* Basic Navbar styling */
 .navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: #333;
+  background-color: black;
   padding: 1rem;
-  z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* Logo Styling */
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
 }
 
 .logo {
-  background: #ffffff;
+  background-color: whitesmoke;
+  width: 50px;
+  height: 50px;
   border-radius: 35%;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease;
 }
 
 .logo:hover {
@@ -83,98 +62,39 @@ export default {
 }
 
 /* Navigation links */
-.navbar-nav {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-item {
-  margin-right: 1rem;
-}
-
 .nav-link {
-  color: #fff;
-  text-decoration: none;
+  color: white;
   padding: 0.5rem 1rem;
-  transition: color 0.3s ease-in-out;
+  transition: color 0.3s ease;
 }
 
 .nav-link:hover {
   color: #ccc;
 }
 
-/* Hamburger Menu */
-.navbar-toggler {
-  background-color: #fff;
-  border: none;
-  padding: 0.5rem;
-  cursor: pointer;
-}
-
+/* Toggler Icon */
 .navbar-toggler-icon {
+  background-color: white;
   width: 25px;
   height: 3px;
-  background-color: #000;
-  margin: 5px 0;
-  transition: 0.4s;
-}
-
-/* Collapse Menu */
-.navbar-collapse {
-  display: flex;
-}
-
-.navbar-collapse.open {
   display: block;
+  margin: 0.2rem 0;
 }
 
-/* Media Queries */
+/* Media Queries for smaller screens */
 @media (max-width: 768px) {
   .navbar-collapse {
-    display: none;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    padding: 0;
-  }
-
-  .navbar-collapse.open {
-    display: flex;
-    background-color: #333;
+    text-align: center;
   }
 
   .navbar-nav {
+    display: flex;
     flex-direction: column;
-    width: 100%;
+    align-items: center;
   }
 
   .nav-item {
-    margin-right: 0;
-  }
-
-  .nav-link {
-    padding: 1rem;
-    width: 100%;
-  }
-
-  .navbar-toggler {
-    display: block;
-  }
-}
-
-@media (min-width: 769px) {
-  .navbar-collapse {
-    justify-content: flex-start;
-  }
-
-  .ml-auto {
-    margin-left: 0;
-  }
-
-  .navbar-toggler {
-    display: none;
+    margin-bottom: 0.5rem;
   }
 }
 </style>
