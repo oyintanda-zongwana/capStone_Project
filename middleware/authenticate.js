@@ -47,7 +47,7 @@ const verifyAToken = (req, res, next) => {
     let {cookie} = req.headers;
     // checks if the token exists first
     let token = cookie && cookie.split("=")[1];
-    jwk.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
         if (err) {
             res.json({message: 'token has expired'});
             return;
