@@ -44,19 +44,31 @@ const checkUser = async (req, res, next) => {
 };
 
 const verifyAToken = (req, res, next) => {
-    let {cookie} = req.headers;
+    const cookie = req.headers.cookie; // Correct header name is 'cookie'
+    
     // checks if the token exists first
-    let token = cookie && cookie.split("=")[1];
+    let token;
+    if (cookie) {
+        const cookies = cookie.split(';');
+        const tokenCookie = cookies.find(c => c.trim().startsWith('token='));
+        if (tokenCookie) {
+            token = tokenCookie.split('=')[1];
+        }
+    }
+    
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+    
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
         if (err) {
-            res.json({message: 'token has expired'});
-            return;
+            return res.status(403).json({ message: 'Token has expired or is invalid' });
         }
-        req.body.user = decoded.username
-        console.log(req.body.username);
-    })
-    console.log(token);
-    next();
+        req.body.user = decoded.username; // Add decoded username to request body
+        console.log(req.body.user); // Fixed the log statement
+        next(); // Ensure 'next' is called inside the verify callback
+    });
 };
+
 
 export {checkUser, verifyAToken}
