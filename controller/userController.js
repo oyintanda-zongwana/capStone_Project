@@ -33,7 +33,7 @@ let getUser = async (req, res) => {
 
 let insertUser = async (req, res) => {    
     try {
-        let { name, surname, age, gender, role, email, password, profile } = req.body;
+        let { name, surname, email, password} = req.body;
         let hashedP = await hash(password, 10);
         await insertUserDB(name, surname,  email, hashedP);
         res.send('Data was inserted successfully');
@@ -59,20 +59,17 @@ let deleteUser = async (req, res) => {
 
 let updateUser = async (req, res) => {
     try {
-        let { name, surname, age, gender, role, email, password, profile } = req.body;
+        let { name, surname, role, email, password} = req.body;
         
         let user = await getUserIdDB(req.params.id); // Ensure this is using `getUserIdDB` as it should match the ID
         if (user) {
             name = name || user.firstName;
             surname = surname || user.lastName;
-            age = age || user.userAge;
-            gender = gender || user.gender;
             role = role || user.userRole;
             email = email || user.email;
             password = password || user.password;
-            profile = profile || user.userProfile;
 
-            await updateUserDB(req.params.id, name, surname, age, gender, role, email, password, profile);
+            await updateUserDB(req.params.id, name, surname, role, email, password);
             res.send('Data has been updated successfully');
         } else {
             res.status(404).send('User not found');
