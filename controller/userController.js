@@ -35,7 +35,7 @@ let insertUser = async (req, res) => {
     try {
         let { name, surname, age, gender, role, email, password, profile } = req.body;
         let hashedP = await hash(password, 10);
-        // await insertUserDB(name, surname, age, gender, role, email, hashedP, profile);
+        await insertUserDB(name, surname, age, gender, role, email, hashedP, profile);
         res.send('Data was inserted successfully');
     } catch (error) {
         res.status(500).send('Error inserting user');
