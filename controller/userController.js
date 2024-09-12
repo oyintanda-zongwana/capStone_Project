@@ -63,11 +63,11 @@ let updateUser = async (req, res) => {
         
         let user = await getUserIdDB(req.params.id); // Ensure this is using `getUserIdDB` as it should match the ID
         if (user) {
-            name = name || user.firstName;
-            surname = surname || user.lastName;
-            role = role || user.userRole;
-            email = email || user.email;
-            password = password || user.password;
+            name ? name = name: name = user.firstName;
+            surname ? surname = surname: surname = user.lastName;
+            role ? role = role: role = user.userRole;
+            email ? email = email: email = user.email;
+            password ? password = password: password = user.password;
 
             await updateUserDB(req.params.id, name, surname, role, email, password);
             res.send('Data has been updated successfully');
