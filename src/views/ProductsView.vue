@@ -9,6 +9,7 @@
     <div class="sort-bar">
       <label for="sortBy">Sort by:</label>
       <select v-model="sortBy" id="sortBy">
+        <option value="none">None</option>
         <option value="price">Price</option>
         <option value="category">Category</option>
         <option value="quantity">Quantity</option>
@@ -49,7 +50,7 @@ export default {
   data() {
     return {
       searchQuery: '',
-      sortBy: 'price', // Default sort by price
+      sortBy: 'none', // Default sort by price
       isLoading: true,
     };
   },
@@ -58,22 +59,25 @@ export default {
     
     // Filter and sort products
     filteredAndSortedProducts() {
-      // Filter products by search query
-      let filteredProducts = this.products.filter((product) => {
-        return product.prodName.toLowerCase().includes(this.searchQuery.toLowerCase());
-      });
+    // Filter products by search query
+    let filteredProducts = this.products.filter((product) => {
+      return product.prodName.toLowerCase().includes(this.searchQuery.toLowerCase());
+    });
 
-      // Sort products based on the selected sort option
-      return filteredProducts.sort((a, b) => {
-        if (this.sortBy === 'price') {
-          return a.amount - b.amount;
-        } else if (this.sortBy === 'category') {
-          return a.category.localeCompare(b.category);
-        } else if (this.sortBy === 'quantity') {
-          return a.quantity - b.quantity;
-        }
-      });
-    },
+    // Sort products based on the selected sort option
+    return filteredProducts.sort((a, b) => {
+      if (this.sortBy === 'price') {
+        return a.amount - b.amount;
+      } else if (this.sortBy === 'category') {
+        // Check if category exists before calling localeCompare
+        const categoryA = a.category ? a.category.toLowerCase() : '';
+        const categoryB = b.category ? b.category.toLowerCase() : '';
+        return categoryA.localeCompare(categoryB);
+      } else if (this.sortBy === 'quantity') {
+        return a.quantity - b.quantity;
+      }
+    });
+  },
   },
   methods: {
     viewProduct(prodID) {
@@ -148,21 +152,6 @@ export default {
 
 .product-info {
   padding: 15px;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #45a049;
 }
 
 .spinner {

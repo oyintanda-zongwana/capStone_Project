@@ -16,8 +16,11 @@
       <!-- Navigation links (collapse) -->
       <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item" v-for="(item, index) in navItems" :key="index">
+          <li class="nav-item" v-for="(item, index) in navItems" :key="index" :v-if="item.label !== 'Admin' || isAdmin">
             <router-link class="nav-link" :to="item.link">{{ item.label }}</router-link>
+          </li>
+          <li class="nav-item" v-if="$cookies.get('token')">
+            <button @click="logout" class="nav-link logout-btn">Logout</button>
           </li>
         </ul>
       </div>
@@ -32,12 +35,32 @@ export default {
       navItems: [
         { label: 'Home', link: '/' },
         { label: 'About', link: '/about' },
-        { label: 'Products', link: '/products' },
-        { label: 'Admin', link: '/admin' },
+        { label: 'Shop', link: '/products' },
+        { label: 'Admin', link: '/admin' },  // This will be conditionally displayed
         { label: 'Login/Sign Up', link: '/login' },
+        { label: 'Contact', link: '/contact' },
         { label: 'Cart', link: '/cart' }
-      ]
+      ],
+      isAdmin: true  // Tracks whether the user is an admin
     };
+  },
+  methods: {
+    checkUserRole() {
+      const token = this.$cookies.get('token');
+      if (token) {
+        // Decode or fetch the role from token or an API if necessary
+        const userRole = this.$cookies.get('userRole');  // Assuming userRole is stored in cookies
+        this.isAdmin = userRole === 'admin';
+      }
+    },
+    logout() {
+      this.$cookies.remove('token');
+      this.$cookies.remove('userRole');  // Also remove the user role
+      this.$router.push('/login');  // Redirect to login page after logout
+    }
+  },
+  created() {
+    this.checkUserRole();  // Check user role on component creation
   }
 };
 </script>
@@ -69,6 +92,19 @@ export default {
 }
 
 .nav-link:hover {
+  color: #ccc;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+.logout-btn:hover {
   color: #ccc;
 }
 

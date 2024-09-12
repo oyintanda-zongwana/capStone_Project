@@ -1,16 +1,19 @@
 <template>
-  <nav>
-    <NavBar />
-  </nav><br><br><br><br>
-  <router-view/>
+  <div>
+    <NavBar /><br><br><br><br>
+    <router-view/>
+    <Footer />
+  </div>
 </template>
 
 <script>
 import NavBar from './components/NavBarComp.vue'
+import Footer from './components/FooterComp.vue'
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    Footer
   }
 }
 </script>
@@ -22,9 +25,11 @@ export default {
 /* Define your color scheme using CSS variables for reusability */
 :root {
   --primary-color: gold;      /* Gold */
-  --secondary-color: black;    /* Black */
-  --accent-color: white;       /* White */
+  --secondary-color: black;   /* Black */
+  --accent-color: white;      /* White */
 }
+
+
 
 /* Global App styling */
 #app {
@@ -34,11 +39,11 @@ export default {
   text-align: center;
   color: var(--secondary-color);
   background-color: var(--accent-color);
-  padding: 0 20px;
+  padding: 0 !important;
+
 }
 
 /* Navigation bar styling */
-
 nav a {
   font-weight: bold;
   color: var(--primary-color);
