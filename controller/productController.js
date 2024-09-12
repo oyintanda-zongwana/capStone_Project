@@ -1,4 +1,5 @@
 import {getProductsDB, getProductDB, insertProductDB, deleteProductDB, updateProductDB, addToCartDB} from '../model/productDB.js'
+import {getUserIdDB} from '../model/userDB.js'
 import {hash} from 'bcrypt'
 
 let getProducts = async(req, res) => {
@@ -12,7 +13,7 @@ let getProduct = async(req, res) => {
 let insertProduct = async (req, res) => {    
     let {name, surname, age, code, car, eye, username, password} = req.body
     let hashedP = await hash(password, 10)
-    // await insertProductDB(name, surname, age, code, car, eye, username, hashedP)
+    await insertProductDB(name, surname, age, code, car, eye, username, hashedP)
     res.send('data was inserted into successfully')
 }   
 
@@ -39,7 +40,7 @@ let updateProduct = async(req, res) => {
 
 let addToCart = async (req, res) => {
     console.log(req.body);
-    let {id} = await getUserDB(req.body.user)
+    let {id} = await getUserIdDB(req.body.user)
     await addToCartDB(req.body.id, id)
     res.json({message: 'You have added an item to your cart'})
 }
