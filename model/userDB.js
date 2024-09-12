@@ -17,11 +17,11 @@ const getUserIdDB = async (id) => {
     return data;
 };
 
-const insertUserDB = async (name, surname, age, gender, role, email, password, profile) => {
+const insertUserDB = async (name, surname, role, email, password, ) => {
     let [data] = await pool.query(`
-        INSERT INTO users (firstName, lastName, userAge, gender, userRole, email, password, userProfile)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `, [name, surname, age, gender, role, email, password, profile]);
+        INSERT INTO users (firstName, lastName, email, password)
+        VALUES (?, ?, ?, ?)
+    `, [name, surname, role, email, password]);
     return data;
 };
 
