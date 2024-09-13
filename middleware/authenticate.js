@@ -47,31 +47,39 @@ const checkUser = async (req, res, next) => {
 };
 
 const verifyAToken = (req, res, next) => {
-    const cookie = req.headers.cookie; // Correct header name is 'cookie'
+    console.log('Headers:', req.headers); // Log all headers to debug
+
+    // Retrieve cookies from headers
+    const cookie = req.headers.cookie;
     
-    // checks if the token exists first
-    let token;
-    if (cookie) {
-        const cookies = cookie.split(';');
-        const tokenCookie = cookies.find(c => c.trim().startsWith('token='));
-        if (tokenCookie) {
-            token = tokenCookie.split('=')[1];
-        }
-    }
-    
-    if (!token) {
+    if (!cookie) {
+        console.log('No cookies found in headers');
         return res.status(401).json({ message: 'No token provided' });
     }
     
+    // Extract token from cookies
+    let token;
+    const cookies = cookie.split(';');
+    const tokenCookie = cookies.find(c => c.trim().startsWith('token='));
+    if (tokenCookie) {
+        token = tokenCookie.split('=')[1];
+    }
+    
+    if (!token) {
+        console.log('Token not found in cookies');
+        return res.status(401).json({ message: 'No token provided' });
+    }
+    
+    // Verify the token
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
         if (err) {
+            console.log('Token verification failed:', err);
             return res.status(403).json({ message: 'Token has expired or is invalid' });
         }
-        req.body.user = decoded.username; // Add decoded username to request body
-        console.log(req.body.user); // Fixed the log statement
-        next(); // Ensure 'next' is called inside the verify callback
+        req.user = decoded.username;
+        console.log('Authenticated user:', req.user);
+        next();
     });
 };
-
 
 export {checkUser, verifyAToken}
