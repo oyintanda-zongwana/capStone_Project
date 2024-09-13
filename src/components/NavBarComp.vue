@@ -1,23 +1,23 @@
 <template>
   <nav class="navbar fixed-top">
     <div class="container d-flex justify-content-between">
-      <!-- Logo on the left -->
       <router-link to="/" class="navbar-brand">
         <img src="https://oyintanda-zongwana.github.io/hosted-pics/pics%20folder/brand.png" alt="Logo" class="logo">
       </router-link>
 
-      <!-- Toggler button on the right -->
       <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         <span class="navbar-toggler-icon"></span>
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <!-- Navigation links (collapse) -->
       <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item" v-for="(item, index) in navItems" :key="index" :v-if="item.label !== 'Admin' || isAdmin">
+          <li class="nav-item" v-for="(item, index) in filteredNavItems" :key="index">
             <router-link class="nav-link" :to="item.link">{{ item.label }}</router-link>
+          </li>
+          <li class="nav-item" v-if="$cookies.get('token')">
+            <router-link class="nav-link" to="/userProfile">Profile</router-link>
           </li>
           <li class="nav-item" v-if="$cookies.get('token')">
             <button @click="logout" class="nav-link logout-btn">Logout</button>
@@ -36,19 +36,24 @@ export default {
         { label: 'Home', link: '/' },
         { label: 'About', link: '/about' },
         { label: 'Shop', link: '/products' },
-        { label: 'Admin', link: '/admin' },  // This will be conditionally displayed
-        { label: 'Login/Sign Up', link: '/login' },
+        { label: 'Admin', link: '/admin' },  // Conditionally displayed for admins
+        { label: 'Login', link: '/login' },
         { label: 'Contact', link: '/contact' },
         { label: 'Cart', link: '/cart' }
       ],
-      isAdmin: true  // Tracks whether the user is an admin
+      isAdmin: false  // Initialize as false
     };
+  },
+  computed: {
+    filteredNavItems() {
+      return this.navItems.filter(item => item.label !== 'Admin' || this.isAdmin);
+    }
   },
   methods: {
     checkUserRole() {
       const token = this.$cookies.get('token');
       if (token) {
-        // Decode or fetch the role from token or an API if necessary
+        // Fetch the role from token or an API if necessary
         const userRole = this.$cookies.get('userRole');  // Assuming userRole is stored in cookies
         this.isAdmin = userRole === 'admin';
       }
@@ -56,12 +61,14 @@ export default {
     logout() {
       this.$cookies.remove('token');
       this.$cookies.remove('userRole');  // Also remove the user role
+      this.$cookies.remove('userID');  // Also remove the userID
       this.$router.push('/login');  // Redirect to login page after logout
+      // location.reload()
     }
   },
   created() {
     this.checkUserRole();  // Check user role on component creation
-  }
+  },
 };
 </script>
 

@@ -23,10 +23,6 @@
           </button>
         </div>
 
-        <div class="form-group" v-if="!isLogin">
-          <label for="confirmPassword">Confirm Password</label>
-          <input :type="eye ? 'text' : 'password'" id="confirmPassword" v-model="form.confirmPassword" required>
-        </div>
         <button type="submit" class="btn">{{ isLogin ? 'Login' : 'Sign Up' }}</button>
       </form>
       <p @click="toggleMode" class="toggle-mode">
@@ -45,8 +41,7 @@ export default {
         name: '',
         surname: '',
         email: '',
-        password: '',
-        confirmPassword: ''
+        password: ''
       },
       eye: false // Default password is hidden
     };
@@ -58,16 +53,10 @@ export default {
         name: '',
         surname: '',
         email: '',
-        password: '',
-        confirmPassword: ''
+        password: ''
       };
     },
     async handleSubmit() {
-      if (!this.isLogin && this.form.password !== this.form.confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-      }
-
       if (this.isLogin) {
         await this.loginUser();
       } else {
@@ -75,20 +64,21 @@ export default {
       }
     },
     async addUser() {
-      try {
-        await this.$store.dispatch('addUser', {
-          name: this.form.name,
-          surname: this.form.surname,
-          email: this.form.email,
-          password: this.form.password
-        });
-        alert('Sign Up successful!');
-        this.isLogin = true; // Switch to login after successful signup
-      } catch (error) {
-        console.error('Error during sign up:', error);
-        alert('Sign Up failed!');
-      }
-    },
+  try {
+    await this.$store.dispatch('addUser', {
+      name: this.form.name,
+      surname: this.form.surname,
+      email: this.form.email,
+      password: this.form.password
+    });
+    // If the dispatch is successful, it means the user was added
+    alert('Sign Up successful!');
+    this.isLogin = true; // Switch to login after successful signup
+  } catch (error) {
+    console.error('Error during sign up:', error);
+    alert('Sign Up failed!');
+    }
+  },
     async loginUser() {
       try {
         await this.$store.dispatch('loginUser', {
@@ -112,22 +102,23 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #000; /* Black background */
 }
 
 .form-container {
-  background-color: #fff;
+  background-color: #fff; /* White background for the form */
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+  border: 2px solid #ffd700; /* Gold border */
 }
 
 h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #333;
+  color: #000; /* Black text */
 }
 
 .form-group {
@@ -138,7 +129,7 @@ h2 {
 label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: #000; /* Black text */
 }
 
 input {
@@ -151,6 +142,7 @@ input {
 .password-group {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .toggle-password {
@@ -160,15 +152,15 @@ input {
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #333;
+  color: #000; /* Black icon color */
   cursor: pointer;
 }
 
 .btn {
   width: 100%;
   padding: 0.75rem;
-  background-color: #333;
-  color: #fff;
+  background-color: #000; /* Black background */
+  color: #ffd700; /* Gold text */
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -177,18 +169,35 @@ input {
 }
 
 .btn:hover {
-  background-color: #555;
+  background-color: #333; /* Darker black for hover */
 }
 
 .toggle-mode {
   margin-top: 1rem;
   text-align: center;
-  color: #333;
+  color: black; /* Gold text */
   cursor: pointer;
   text-decoration: underline;
 }
 
 .toggle-mode:hover {
-  color: #555;
+  color: gold; /* White text on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .form-container {
+    padding: 1rem;
+    border-radius: 4px;
+  }
+  
+  .password-group {
+    flex-direction: column;
+  }
+  
+  .toggle-password {
+    position: relative;
+    margin-top: 0.5rem;
+  }
 }
 </style>

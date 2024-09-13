@@ -37,7 +37,6 @@
     <table v-if="users">
       <thead>
         <tr>
-          <th>Profile</th>
           <th>Name</th>
           <th>Surname</th>
           <th>Email</th>
@@ -46,7 +45,6 @@
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user.id">
-          <td data-label="Profile"><img v-if="user.userProfile" :src="user.userProfile" :alt="user.firstName" class="product-image"></td>
           <td data-label="Name">{{ user.firstName }}</td>
           <td data-label="Surname">{{ user.lastName }}</td>
           <td data-label="Email">{{ user.email }}</td>
@@ -120,8 +118,8 @@
                 <input type="email" class="form-control" id="email" v-model="currentUser.email" required>
               </div>
               <div class="mb-3">
-                <label for="userProfile" class="form-label">Profile Image URL</label>
-                <input type="text" class="form-control" id="userProfile" v-model="currentUser.userProfile">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" v-model="currentUser.password" required>
               </div>
               <button type="submit" class="btn btn-primary">{{ isEdit ? 'Save Changes' : 'Add User' }}</button>
             </form>
@@ -151,7 +149,7 @@ export default {
         firstName: '',
         lastName: '',
         email: '',
-        userProfile: ''
+        password: ''
       }
     };
   },
@@ -163,56 +161,84 @@ export default {
     this.getUsers();
   },
   methods: {
-    ...mapActions(['getProducts', 'getUsers', 'addProduct', 'editProduct', 'deleteProduct', 'addUser', 'editUser', 'deleteUser']),
-    
-    openAddProductModal() {
-      this.isEdit = false;
-      this.currentProduct = { prodName: '', amount: 0, catergory: '', quantity: 0, prodUrl: '' };
-      new bootstrap.Modal(document.getElementById('productModal')).show();
-    },
-    openEditProductModal(product) {
-      this.isEdit = true;
-      this.currentProduct = { ...product };
-      new bootstrap.Modal(document.getElementById('productModal')).show();
-    },
-    async submitProduct() {
-      if (this.isEdit) {
-        await this.editProduct(this.currentProduct);
-      } else {
-        await this.addProduct(this.currentProduct);
-      }
-      new bootstrap.Modal(document.getElementById('productModal')).hide();
-    },
-    async deleteProduct(prodID) {
-      if (confirm('Are you sure you want to delete this product?')) {
-        await this.deleteProduct(prodID);
-      }
-    },
+  ...mapActions(['getProducts', 'getUsers', 'addProduct', 'editProduct', 'deleteProduct', 'addUser', 'editUser', 'deleteUser']),
+  
+  // Open the add product modal
+  openAddProductModal() {
+    this.isEdit = false;
+    this.currentProduct = { prodName: '', amount: 0, catergory: '', quantity: 0, prodUrl: '' };
+    new bootstrap.Modal(document.getElementById('productModal')).show();
+  },
+  
+  // Open the edit product modal with pre-filled data
+  openEditProductModal(product) {
+    this.isEdit = true;
+    this.currentProduct = { ...product };
+    new bootstrap.Modal(document.getElementById('productModal')).show();
+  },
 
-    openAddUserModal() {
-      this.isEdit = false;
-      this.currentUser = { firstName: '', lastName: '', email: '', userProfile: '' };
-      new bootstrap.Modal(document.getElementById('userModal')).show();
-    },
-    openEditUserModal(user) {
-      this.isEdit = true;
-      this.currentUser = { ...user };
-      new bootstrap.Modal(document.getElementById('userModal')).show();
-    },
-    async submitUser() {
-      if (this.isEdit) {
-        await this.editUser(this.currentUser);
-      } else {
-        await this.addUser(this.currentUser);
-      }
-      new bootstrap.Modal(document.getElementById('userModal')).hide();
-    },
-    async deleteUser(userId) {
-      if (confirm('Are you sure you want to delete this user?')) {
-        await this.deleteUser(userId);
-      }
+  // Submit product form (Add or Edit)
+  async submitProduct() {
+  try {
+    if (this.isEdit) {
+      await this.$store.dispatch('editProduct', this.currentProduct);
+    } else {
+      await this.$store.dispatch('addProduct', this.currentProduct);
     }
+    new bootstrap.Modal(document.getElementById('productModal')).hide();
+    this.getProducts(); // Refresh product list
+  } catch (error) {
+    console.error('Error submitting product:', error);
   }
+},
+
+
+  // Delete product by ID
+  async deleteProduct(prodID) {
+  if (confirm('Are you sure you want to delete this product?')) {
+    await this.$store.dispatch('deleteProduct', prodID); // Use this.$store.dispatch for Vuex actions
+    this.getProducts(); // Refresh product list
+  }
+},
+
+  // Open the add user modal
+  openAddUserModal() {
+    this.isEdit = false;
+    this.currentUser = { firstName: '', lastName: '', email: '', password: '' };
+    new bootstrap.Modal(document.getElementById('userModal')).show();
+  },
+
+  // Open the edit user modal with pre-filled data
+  openEditUserModal(user) {
+    this.isEdit = true;
+    this.currentUser = { ...user };
+    new bootstrap.Modal(document.getElementById('userModal')).show();
+  },
+
+  // Submit user form (Add or Edit)
+  async submitUser() {
+  try {
+    if (this.isEdit) {
+      await this.$store.dispatch('editUser', this.currentUser); // Edit user
+    } else {
+      await this.$store.dispatch('addUser', this.currentUser); // Add new user
+    }
+    new bootstrap.Modal(document.getElementById('userModal')).hide(); // Hide user modal
+    this.getUsers(); // Refresh user list
+  } catch (error) {
+    console.error('Error submitting user:', error);
+  }
+},
+
+
+  // Delete user by ID
+  async deleteUser(userId) {
+  if (confirm('Are you sure you want to delete this user?')) {
+    await this.$store.dispatch('deleteUser', userId); // Use this.$store.dispatch for Vuex actions
+    this.getUsers(); // Refresh user list
+   }
+  }
+}
 };
 </script>
 

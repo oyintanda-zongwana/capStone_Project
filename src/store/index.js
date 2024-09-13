@@ -6,7 +6,7 @@ import {useCookies} from 'vue-cookies'
 import router from '@/router';
 
 axios.defaults.withCredentials = true
-axios.defaults.headers = $cookies.get('token')
+axios.defaults.headers = $cookies.get('token');
 
 const apiUrl = 'https://capstone-project-fhbp.onrender.com/'
 
@@ -14,6 +14,7 @@ export default createStore({
   state: {
     products: null,
     users: null,
+    user: null,
     cart: [] 
   },
   mutations: {
@@ -23,6 +24,9 @@ export default createStore({
     },
     setUsers(state, users) {
       state.users = users;
+    },
+    setUser(state, user) {
+      state.user = user;
     },
     addProduct(state, product) {
       state.products.push(product);
@@ -48,12 +52,6 @@ export default createStore({
     deleteUser(state, userId) {
       state.users = state.users.filter(u => u.id !== userId);
     },
-    setProducts(state, payload) {
-      state.products = payload;
-    },
-    setUsers(state, users) {
-      state.users = users;
-    },
     addToCart(state, product) {
       const itemInCart = state.cart.find(item => item.id === product.id);
       if (itemInCart) {
@@ -65,7 +63,7 @@ export default createStore({
     removeFromCart(state, productId) {
       state.cart = state.cart.filter(item => item.id !== productId);
     }
-  },
+  },  
   actions: {
     async getProducts({ commit }) {
       try {
@@ -85,6 +83,15 @@ export default createStore({
         toast.error('Failed to fetch users');
       }
     },
+    async getUser({ commit }, userID) {
+      try {
+        let { data } = await axios.get(`${apiUrl}users/${userID}`);
+        commit('setUser', Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        toast.error('Failed to fetch user');
+      }
+    },
     async addProduct({ commit }, productData) {
       try {
         const { data } = await axios.post(`${apiUrl}products/addProduct`, productData);
@@ -95,9 +102,9 @@ export default createStore({
         toast.error('Failed to add product');
       }
     },
-    async editProduct({ commit }, productData) {
+    async editProduct({ commit }, prodID) {
       try {
-        const { data } = await axios.put(`${apiUrl}products/update/${productData.id}`, productData);
+        const { data } = await axios.patch(`${apiUrl}products/update/${prodID}`, prodID);
         commit('updateProduct', data);
         toast.success('Product updated successfully');
       } catch (error) {
@@ -105,19 +112,19 @@ export default createStore({
         toast.error('Failed to update product');
       }
     },
-    async deleteProduct({ commit }, productId) {
+    async deleteProduct({ commit }, prodID) {
       try {
-        await axios.delete(`${apiUrl}products/delete/${productId}`);
-        commit('deleteProduct', productId);
+        await axios.delete(`${apiUrl}products/delete/${prodID}`);
+        commit('deleteProduct', prodID);
         toast.success('Product deleted successfully');
       } catch (error) {
         console.error('Error deleting product:', error);
         toast.error('Failed to delete product');
       }
     },
-    async addUser({ commit }, userData) {
+    async addUser({ commit }, userID) {
       try {
-        const { data } = await axios.post(`${apiUrl}users/register`, userData);
+        const { data } = await axios.post(`${apiUrl}users/register`, userID);
         commit('addUser', data);
         toast.success('User added successfully');
       } catch (error) {
@@ -125,14 +132,12 @@ export default createStore({
         toast.error('Failed to add user');
       }
     },
-    async editUser({ commit }, userData) {
+    async editUser({ commit }, user) {
       try {
-        const { data } = await axios.put(`${apiUrl}users/update/${userData.id}`, userData);
-        commit('updateUser', data);
-        toast.success('User updated successfully');
+        const response = await axios.patch(`${apiUrl}users/${user.userID}`, user);
+        commit('updateUser', response.data);
       } catch (error) {
-        console.error('Error updating user:', error);
-        toast.error('Failed to update user');
+        console.error('Error editing user:', error);
       }
     },
     async deleteUser({ commit }, userId) {
@@ -148,7 +153,10 @@ export default createStore({
     async loginUser({commit}, info) {
       try {
         let {data} = await axios.post(`${apiUrl}users/login`, info);
+        console.log(data);
+        
         $cookies.set('token', data.token);
+        $cookies.set('userRole', data.role);
         if (data.message) {
           toast.success("Login is successful", {
             theme: "dark",
