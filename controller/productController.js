@@ -40,9 +40,9 @@ let updateProduct = async(req, res) => {
 
 let addToCart = async (req, res) => {
     console.log(req.body);
-    let {id} = await getUserIdDB(req.body.user)
-    await addToCartDB(req.body.id, id)
-    res.json({message: 'You have added an item to your cart'})
-}
+    let { id } = await getUserIdDB(req.body.user); // Get user ID from the database
+    await addToCartDB(id, req.body.prodID); // Pass correct userID and productID
+    res.json({ message: 'You have added an item to your cart' });
+};
 
 export {getProducts, getProduct, insertProduct, deleteProduct, updateProduct, addToCart}

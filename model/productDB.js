@@ -36,7 +36,7 @@ const addToCartDB = async (userID, prodID) => {
     await pool.query(`
         INSERT INTO cart (userID, prodID)
         VALUES (?, ?)
-        `, [userID, prodID])
-}
+    `, [userID, prodID]);
+};
 
 export { getProductsDB, getProductDB, insertProductDB, deleteProductDB, updateProductDB, addToCartDB};
