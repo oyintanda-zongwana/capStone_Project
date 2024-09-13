@@ -11,7 +11,9 @@ const checkUser = async (req, res, next) => {
     
     try {
         let user = await getUserDB(email);
+        console.log("userRole:", user.userRole);
         
+
         if (!user) {
             return res.status(404).send("User not found");
         }
@@ -33,6 +35,7 @@ const checkUser = async (req, res, next) => {
             let token = jwt.sign({ email: email }, process.env.SECRET_KEY, { expiresIn: '1h' });
             console.log("Generated token:", token); // Debug log
             req.body.token = token;
+            req.body.userRole = user.userRole;
             next();
         } else {
             res.status(401).send("Password is incorrect");

@@ -83,7 +83,8 @@ const loginUser = (req, res) => {
     try {
         res.send({
             message: "You have signed in successfully", 
-            token: req.body.token
+            token: req.body.token,
+            role: req.body.userRole
         });
     } catch (error) {
         res.status(500).send('Error during login');
