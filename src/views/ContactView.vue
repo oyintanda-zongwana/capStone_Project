@@ -9,7 +9,7 @@
 
     <div class="contact-form">
       <h1>Contact Us</h1>
-      <form @submit.prevent="submitForm">
+      <form @submit.prevent="submitForm"  action="https://formspree.io/f/xdknvzjz" method="POST">
         <div class="form-group">
           <label for="name">Name:</label>
           <input 
